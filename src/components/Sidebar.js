@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { sidebarItems } from "../components/data/SidebarData";
@@ -13,8 +12,8 @@ function Sidebar() {
         </NewMessage>
       </WorkSpaceContainer>
       <MainChannels>
-        {sidebarItems.map((item) => (
-          <MainChannelItem>
+        {sidebarItems.map((item, i) => (
+          <MainChannelItem key={i}>
             {item.icon}
             {item.text}
           </MainChannelItem>
