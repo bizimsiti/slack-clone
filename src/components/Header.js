@@ -3,7 +3,7 @@ import styled from "styled-components";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
-function Header() {
+function Header({ signOut, user }) {
   return (
     <Container>
       <Main>
@@ -16,10 +16,14 @@ function Header() {
         <HelpOutlineIcon />
       </Main>
       <UserContainer>
-        <Name>Ali</Name>
+        <Name>{user.name}</Name>
         <UserImage>
-          <img src="https://imgur.com/6VBx3io.png" alt="" />
+          <img
+            src={user.photo ? user.photo : "https://imgur.com/6VBx3io"}
+            alt=""
+          />
         </UserImage>
+        <LogoutButton onClick={signOut}>Logout</LogoutButton>
       </UserContainer>
     </Container>
   );
@@ -32,7 +36,6 @@ const Container = styled.div`
   color: #fff;
   display: flex;
   align-items: center;
-  justify-content: center;
   position: relative;
   box-shadow: inset 0 0 0 1px rgb(104 74 104);
 `;
@@ -50,6 +53,7 @@ const UserContainer = styled.div`
 const SearchContainer = styled.div`
   min-width: 400px;
   margin: 0 16px;
+  flex: 1;
 `;
 const Search = styled.div`
   width: 100%;
@@ -73,5 +77,20 @@ const UserImage = styled.div`
   border-radius: 2px;
   img {
     width: 100%;
+  }
+`;
+
+const LogoutButton = styled.button`
+  margin: 0 20px;
+  background-color: #df1562;
+  color: #f3f3f3;
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  font-family: "Mina", sans-serif;
+  cursor: pointer;
+  :hover {
+    background-color: #f3f3f3;
+    color: #df1562;
   }
 `;

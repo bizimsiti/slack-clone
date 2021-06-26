@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import styled from "styled-components";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
+import { useParams } from "react-router-dom";
+import db from "../firebase";
 function Chat() {
+  const { channelId } = useParams();
+  const [channel, setChannel] = useState();
+  const getChannel = useCallback(() => {
+    db.collection("rooms")
+      .doc(channelId)
+      .onSnapshot((snapshot) => {
+        setChannel(snapshot.data());
+      });
+  }, [channelId]);
+  useEffect(() => {
+    getChannel();
+  }, [channelId, getChannel]);
+
   return (
     <Container>
       <Header>
         <Channel>
-          <ChannelName># javascript</ChannelName>
+          <ChannelName># {channel.name}</ChannelName>
           <ChannelInfo>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae,
             nulla!

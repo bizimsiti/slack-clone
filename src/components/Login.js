@@ -2,12 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import slacklogo from "../assets/slacklogo.png";
 import { auth, provider } from "../firebase";
-function Login() {
+function Login({ setUser }) {
   const signIn = () => {
     auth
       .signInWithPopup(provider)
       .then((result) => {
-        console.log(result.user);
+        const newUser = {
+          name: result.user.displayName,
+          photo: result.user.photoURL
+        };
+        localStorage.setItem("user", JSON.stringify(newUser));
+        setUser(newUser);
       })
       .catch((err) => {
         alert(err.message);
@@ -19,9 +24,7 @@ function Login() {
       <Content>
         <SlackImg src={slacklogo} />
         <h1>Sign in Slack</h1>
-        <SignInButton onClick={() => signIn()}>
-          Sign In With Google
-        </SignInButton>
+        <SignInButton onClick={signIn}>Sign In With Google</SignInButton>
       </Content>
     </Container>
   );
