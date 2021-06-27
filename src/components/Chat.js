@@ -5,25 +5,51 @@ import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import { useParams } from "react-router-dom";
 import db from "../firebase";
-function Chat() {
+import firebase from "firebase";
+function Chat({ user }) {
   const { channelId } = useParams();
   const [channel, setChannel] = useState();
-  const getChannel = useCallback(() => {
+  const [messages, setMessages] = useState([]);
+  const getChannel = () => {
     db.collection("rooms")
       .doc(channelId)
       .onSnapshot((snapshot) => {
         setChannel(snapshot.data());
       });
-  }, [channelId]);
+  };
+  const getMessages = () => {
+    db.collection("rooms")
+      .doc(channelId)
+      .collection("messages")
+      .orderBy("timestamp", "asc")
+      .onSnapshot((snapshot) => {
+        let messages = snapshot.docs.map((doc) => doc.data());
+        setMessages(messages);
+      });
+  };
+
+  const sendMessage = (text) => {
+    if (channelId) {
+      let payload = {
+        text: text,
+        timestamp: firebase.firestore.Timestamp.now(),
+        user: user.name,
+        photo: user.photo
+      };
+      db.collection("rooms").doc(channelId).collection("messages").add(payload);
+      console.log(payload);
+    }
+  };
+
   useEffect(() => {
     getChannel();
-  }, [channelId, getChannel]);
-
+    getMessages();
+  }, [channelId]);
   return (
     <Container>
       <Header>
         <Channel>
-          <ChannelName># {channel.name}</ChannelName>
+          <ChannelName># {channel?.name}</ChannelName>
           <ChannelInfo>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae,
             nulla!
@@ -35,9 +61,12 @@ function Chat() {
         </ChannelDetails>
       </Header>
       <MessageContainer>
-        <ChatMessage />
+        {messages.length > 0 &&
+          messages.map((message, i) => (
+            <ChatMessage key={i} message={message} />
+          ))}
       </MessageContainer>
-      <ChatInput />
+      <ChatInput sendMessage={sendMessage} />
     </Container>
   );
 }
