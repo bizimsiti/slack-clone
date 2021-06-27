@@ -4,9 +4,6 @@ import SendIcon from "@material-ui/icons/Send";
 function ChatInput({ sendMessage }) {
   const [input, setInput] = useState("");
 
-  const handleInput = (e) => {
-    setInput(e.target.value);
-  };
   const send = (e) => {
     e.preventDefault();
     if (!input) return;
@@ -22,7 +19,7 @@ function ChatInput({ sendMessage }) {
           <input
             required
             value={input}
-            onChange={handleInput}
+            onChange={(e) => setInput(e.target.value)}
             type="text"
             placeholder="Enter the Message"
           />
